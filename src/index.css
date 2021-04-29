@@ -12,9 +12,9 @@ code {
     monospace;
 }
 
-ul {
+/* ul {
   display: inline-block;
-}
+} */
 
 div {
   display: flex;
@@ -22,4 +22,104 @@ div {
 
 p {
   border-style: solid;
+}
+
+span.backlog {
+  display: block;
+  background-color: aqua;
+  margin: 0%;
+  padding: 0%;
+  width: 100%;
+  max-width: 100%;
+}
+
+section.title {
+  text-align: center;
+}
+
+section.display-boxes{
+  align-self: left;
+  display: block;
+  margin: 0%;
+  padding: 5%;
+  border-style: none;
+  background-color: green;
+}
+
+section.display-boxes ul{
+  align-self: left;
+  display: block;
+  margin: 0%;
+  padding: 0%;
+  padding-bottom: 5%;
+  margin-bottom: 5%;
+}
+
+section.display-complete-boxes{
+  align-self: left;
+  display: block;
+  margin: 0%;
+  padding: 5%;
+  border-style: none;
+  background-color: green;
+}
+
+section.display-complete-boxes ul{
+  align-self: left;
+  display: block;
+  margin: 0%;
+  padding: 0%;
+  padding-bottom: 5%;
+  margin-bottom: 5%;
+}
+
+section.input-box{
+  align-self: left;
+  display: block;
+  margin: 0%;
+  padding: 5%;
+  border-style: none;
+  background-color: red;
+}
+
+section.input-box input {
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+  margin-bottom: 2%;
+  padding-bottom: 2%;
+  border-style: none;
+}
+
+textarea {
+  display: block;
+  float: left;
+  width: 100%;
+  max-width: 100%;
+  margin: 0%;
+  padding: 0%;
+  margin-bottom: 2%;
+  padding-bottom: 2%;
+  border-style: none;
+  resize: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+}
+
+section.display-boxes ul div label{
+  width: 100%;
+}
+
+section.display-boxes span article{
+  display: block;
+  width: 100%;
+  max-width: 90%;
+  margin: 0%;
+  padding: 0%;
+  margin-bottom: 2%;
+  padding-bottom: 2%;
+  border-style: none;
+  resize: none;
+  word-wrap: break-word;
 }

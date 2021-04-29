@@ -44,69 +44,110 @@ class App extends React.Component {
       <DisplayBox
         title={this.state.backlogTitle}
         desc={this.state.backlogDesc}
-        delete={this.delete.bind(this)}
+        delete={this.deleteBacklog.bind(this)}
       />
     );
     this.toggle();
   }
 
-  handleToDOTitle(e) {
+  handleToDoTitle(e) {
     this.setState({
       toDoTitle: e.target.value,
     });
   }
 
-  handleToDODesc(e) {
+  handleToDoDesc(e) {
     this.setState({
       toDoDesc: e.target.value,
     });
   }
 
-  delete(rmvcomp) {
-    let i = 0;
-    this.state.backlogTasks.forEach((comp) => {
-      console.log(comp.props.title);
-      console.log(rmvcomp.props.title);
-      console.log(comp.props.title === rmvcomp.props.title);
-      if (comp.props.title === rmvcomp.props.title) {
-        this.state.backlogTasks.splice(i, 1);
-        this.toggle();
-        return;
-      }
-    });
+  handleToDoClick() {
+    this.state.toDoTasks.push(
+      <DisplayBox
+        title={this.state.toDoTitle}
+        desc={this.state.toDoDesc}
+        delete={this.deleteToDo.bind(this)}
+      />
+    );
+    this.toggle();
   }
 
-  update() {
-    this.setState({
-      toToDo: this.backlog,
-      toComplete: this.complete,
-    });
+  moveBacklog(mvcomp) {
+    let comp = this.state.backlogTasks.filter((task) => {
+      return task.props.title === mvcomp
+    })
+    comp = comp[0]
+    let arr = this.state.toDoTasks
+    arr.push(<DisplayBox title={comp.props.title} desc={comp.props.desc} delete={this.deleteToDo.bind(this)} move={this.moveToDo.bind(this)}/>)
+    this.deleteBacklog(comp.props.title)
+    this.setState(() => ({
+      toDoTasks: arr
+    }))
+  }
+
+  moveToDo(mvcomp) {
+    let comp = this.state.toDoTasks.filter((task) => {
+      return task.props.title === mvcomp
+    })
+    comp = comp[0]
+    let arr = this.state.completeTasks
+    arr.push(<DisplayBox title={comp.props.title} desc={comp.props.desc} delete={this.deleteToDo.bind(this)} move={this.moveToDo.bind(this)}/>)
+    this.deleteToDo(comp.props.title)
+    this.setState(() => ({
+      completeTasks: arr
+    }))
+  }
+
+  deleteBacklog(rmvcomp) {
+    let arr =  this.state.backlogTasks.filter((task) => {
+      return task.props.title !== rmvcomp}
+    )
+    this.setState(() => ({
+        backlogTasks: arr
+    }))
+  }
+
+  deleteToDo(rmvcomp) {
+    let arr =  this.state.toDoTasks.filter((task) => {
+      return task.props.title !== rmvcomp}
+    )
+    this.setState(() => ({
+        toDoTasks: arr
+    }))
+  }
+
+  deleteComplete(rmvcomp) {
+    let arr =  this.state.completeTasks.filter((task) => {
+      return task.props.title !== rmvcomp}
+    )
+    this.setState(() => ({
+        completeTasks: arr
+    }))
   }
 
   render() {
     return (
       <div className="App">
-        <ul>
-          <section>
+        <span className="backlog">
+          <section className="title">
             <h1>Backlog</h1>
           </section>
-          <section>
             {this.state.backlogTasks.map((task) => {
-              return task;
+              return <DisplayBox title={task.props.title} desc={task.props.desc} delete={this.deleteBacklog.bind(this)} move={this.moveBacklog.bind(this)}/>;
             })}
-          </section>
-          <section>
+          <section className="input-box">
             <input
               onChange={(e) => {
                 this.handleBacklogTitle(e);
               }}
             ></input>
             <br />
-            <input
+            <textarea
               onChange={(e) => {
                 this.handleBacklogDesc(e);
               }}
-            ></input>
+            ></textarea>
             <br />
             <button
               onClick={() => {
@@ -116,134 +157,45 @@ class App extends React.Component {
               Add
             </button>
           </section>
-        </ul>
-        <ul>
-          <section>
+        </span>
+        <span className="to-do">
+          <section className="title">
             <h1>To-Do</h1>
           </section>
-          <section>
             {this.state.toDoTasks.map((task) => {
-              return task;
+              return <DisplayBox title={task.props.title} desc={task.props.desc} delete={this.deleteToDo.bind(this)} move={this.moveToDo.bind(this)}/>;
             })}
-          </section>
-          <section>
+          <section className="input-box">
             <input
               onChange={(e) => {
-                this.handleTitle(e);
+                this.handleToDoTitle(e);
               }}
-            ></input>
+            ></ input>
             <br />
-            <input onChange={this.handleDesc}></input> <br />
-            <button onClick={this.handleClick}>Add</button>
+            <textarea
+              onChange={(e) => {
+                this.handleToDoDesc(e);
+              }}
+            ></textarea>
+            <br />
+            <button
+              onClick={() => {
+                this.handleToDoClick();
+              }}
+            >
+              Add
+            </button>
           </section>
-        </ul>
-        <ul>
-          <section>
+        </span>
+        <span className="complete">
+          <section className="title">
             <h1>Complete</h1>
           </section>
-          <section>
             {this.state.completeTasks.map((task) => {
-              return task;
+              return <DisplayBoxComplete title={task.props.title} desc={task.props.desc} delete={this.deleteComplete.bind(this)}/>;
             })}
-          </section>
-        </ul>
+        </span>
       </div>
-    );
-  }
-}
-
-class Column extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columnName: props.columnName,
-      className: props.className,
-      title: "",
-      desc: "",
-      tasks: [],
-      update: false,
-    };
-    this.handleTitle = this.handleTitle.bind(this);
-    this.handleDesc = this.handleDesc.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleTitle(e) {
-    this.setState((state) => ({
-      title: e.target.value,
-    }));
-  }
-
-  handleDesc(e) {
-    this.setState((state) => ({
-      desc: e.target.value,
-    }));
-  }
-
-  handleClick(e) {
-    this.setState(() => ({
-      update: true,
-    }));
-    console.log(e);
-    this.state.tasks.push(
-      <DisplayBox title={this.state.title} desc={this.state.desc} />
-    );
-    this.setState(() => ({
-      update: false,
-    }));
-  }
-
-  render() {
-    return (
-      <ul>
-        <section>
-          <h1>{this.state.columnName}</h1>
-        </section>
-        <section>
-          {this.state.tasks.map((task) => {
-            return task;
-          })}
-        </section>
-        <section>
-          <input
-            onChange={(e) => {
-              this.handleTitle(e);
-            }}
-          ></input>
-          <br />
-          <input onChange={this.handleDesc}></input> <br />
-          <button onClick={this.handleClick}>Add</button>
-        </section>
-      </ul>
-    );
-  }
-}
-
-class CompleteColumn extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      columnName: props.columnName,
-      className: props.className,
-      title: "",
-      desc: "",
-      tasks: [],
-      update: false,
-    };
-  }
-
-  render() {
-    return (
-      <ul>
-        <section>
-          <h1>{this.state.columnName}</h1>
-        </section>
-        <section>
-          {this.state.tasks.map((task) => {
-            return task;
-          })}
-        </section>
-      </ul>
     );
   }
 }
@@ -256,21 +208,65 @@ class DisplayBox extends React.Component {
       desc: props.desc,
     };
   }
+
   render() {
     return (
-      <ul>
-        <label>{this.state.title}</label>
-        <label>{this.state.desc}</label>
-        <button
-          onClick={() => {
-            this.props.delete(this);
-          }}
-        >
-          Delete
-        </button>
-      </ul>
+      <section className="display-boxes">
+        <span>
+          <article>{this.props.title}</article>
+          <article>{this.props.desc}</article>
+          <div>
+            <button
+              onClick={()=> {
+                this.props.move(this.props.title)
+              }}
+              >
+                &gt;
+            </button>
+            <button
+              onClick={() => {
+                this.props.delete(this.props.title);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </span>
+      </section>
     );
   }
 }
+
+class DisplayBoxComplete extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: props.title,
+      desc: props.desc,
+    };
+  }
+
+  render() {
+    return (
+      <section className="display-complete-boxes">
+      <ul>
+        <div><label>{this.props.title}</label></div>
+        <div><label>{this.props.desc}</label></div>
+        <div>
+          <button
+            onClick={() => {
+              this.props.delete(this.props.title);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </ul>
+      </section>
+    );
+  }
+}
+
+
 
 export default App;
